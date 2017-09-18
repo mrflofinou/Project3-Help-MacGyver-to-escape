@@ -14,9 +14,17 @@ def main():
     Main function of the programm
     """
     board = classes.Board()
+    mac = classes.Characters()
     board.initialization()
-    board.display()
-
+    board.display(mac)
+    loop = 1
+    while loop:
+        direction = input("choose the direction: ")
+        mac.move(direction, board)
+        board.display(mac)
+        if board.STRUCTURE[mac.line][mac.column] == "a":
+            print("\nYOU WIN !")
+            break
 
 if __name__ == "__main__":
     main()
