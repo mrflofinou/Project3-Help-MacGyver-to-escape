@@ -9,6 +9,7 @@ There are 6 classes:
     - Rules
 """
 
+import constants
 
 class Board:
     """
@@ -31,10 +32,52 @@ class Board:
             for line in labyrinth:
                 self.STRUCTURE += line.split()
 
-    def display(self):
+    def display(self, character):
         """
         This method is to display the game board
         """
         #for each line of list STRUCTURE we print the line
-        for line in self.STRUCTURE:
-            print(line)
+        for i, line in enumerate(self.STRUCTURE):
+            #We create a temporary list to save the letters of a line
+            #that will allow to print line by line and not letter by letter
+            temp = []
+            for j, letter in enumerate(line):
+                if character.line == i and character.column == j:
+                    temp += character.avatar
+                else:
+                    temp += letter
+            print("".join(temp))
+
+class Characters:
+    """
+    This class is use for:
+    - create a character with:
+        .an avatar
+        .a position
+    - move the character
+    """
+    def __init__(self):
+        self.avatar = 'X'
+        self.line = 14
+        self.column = 0
+
+    def move(self, direction, board):
+        """
+        This method allow the movement of the character in the labyrinth
+        """
+        if direction == "o":
+            if self.line > 0:
+                if board.STRUCTURE[self.line - 1][self.column] != "#":
+                    self.line -= 1
+        if direction == "l":
+            if self.line < 14:
+                if board.STRUCTURE[self.line + 1][self.column] != "#":
+                    self.line += 1
+        if direction == "k":
+            if self.column > 0:
+                if board.STRUCTURE[self.line][self.column - 1] != "#":
+                    self.column -= 1
+        if direction == "m":
+            if self.column < 14:
+                if board.STRUCTURE[self.line][self.column + 1] != "#":
+                    self.column += 1
