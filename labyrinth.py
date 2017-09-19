@@ -7,14 +7,14 @@ This is a game where we have to help MacGyver to escape
 Mac Gyver must find 3 items to fight the guardian of the labyrinth
 """
 
-import classes
+import game
 
 def main():
     """
     Main function of the programm
     """
-    board = classes.Board()
-    mac = classes.Characters()
+    board = game.Board()
+    mac = game.Characters()
     board.initialization()
     board.display(mac)
     loop = 1
