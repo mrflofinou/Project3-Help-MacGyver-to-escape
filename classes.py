@@ -64,20 +64,24 @@ class Characters:
     def move(self, direction, board):
         """
         This method allow the movement of the character in the labyrinth
+        press "o" to go up
+        press "l" to go down
+        press "k" to go left
+        press "m" to go right
         """
-        if direction == "o":
+        if direction == "o": #up
             if self.line > 0:
                 if board.STRUCTURE[self.line - 1][self.column] != "#":
                     self.line -= 1
-        if direction == "l":
+        if direction == "l": #down
             if self.line < 14:
                 if board.STRUCTURE[self.line + 1][self.column] != "#":
                     self.line += 1
-        if direction == "k":
+        if direction == "k": #left
             if self.column > 0:
                 if board.STRUCTURE[self.line][self.column - 1] != "#":
                     self.column -= 1
-        if direction == "m":
+        if direction == "m": #right
             if self.column < 14:
                 if board.STRUCTURE[self.line][self.column + 1] != "#":
                     self.column += 1
