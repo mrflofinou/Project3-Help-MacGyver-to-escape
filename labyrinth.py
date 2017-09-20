@@ -15,7 +15,6 @@ def main():
     """
     board = game.Board()
     mac = game.Characters()
-    board.initialization()
     board.display(mac)
     loop = 1
     while loop:
