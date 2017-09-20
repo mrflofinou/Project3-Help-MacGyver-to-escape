@@ -11,6 +11,7 @@ There are 6 classes:
 
 import constants
 
+
 class Board:
     """
     This class is use for:
@@ -21,7 +22,7 @@ class Board:
     #Class attribute to save the structure of the labyrinth in a list
     STRUCTURE = []
 
-    def initialization(self):
+    def __init__(self):
         """
         This method is to initialize the game board
         from the file "structure" wich contains the structure of the labyrinth
@@ -30,23 +31,23 @@ class Board:
         #as a list in STRUCTURE[]
         with open("structure", "r") as labyrinth:
             for line in labyrinth:
-                self.STRUCTURE += line.split()
+                structure_lines = []
+                for letter in line:
+                    if letter != "\n":
+                        structure_lines.append(letter)
+                self.STRUCTURE.append(structure_lines)
 
     def display(self, character):
         """
         This method is to display the game board
         """
-        #for each line of list STRUCTURE we print the line
-        for i, line in enumerate(self.STRUCTURE):
-            #We create a temporary list to save the letters of a line
-            #that will allow to print line by line and not letter by letter
-            temp = []
-            for j, letter in enumerate(line):
-                if character.line == i and character.column == j:
-                    temp += character.avatar
-                else:
-                    temp += letter
-            print("".join(temp))
+        # copy the liste STRUCTURE in new_structure without to copy
+        # the references of the list STRUCTURE -> the list STRUCTURE
+        # will be not modify if new_structure will be modifiy
+        new_structure = [[letter for letter in line]for line in self.STRUCTURE]
+        new_structure[character.line][character.column] = character.avatar
+        [print("".join(line)) for line in new_structure]
+
 
 class Characters:
     """
@@ -58,8 +59,8 @@ class Characters:
     """
     def __init__(self):
         self.avatar = 'X'
-        self.line = 14
         self.column = 0
+        self.line = 14
 
     def move(self, direction, board):
         """
