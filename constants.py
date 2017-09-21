@@ -4,7 +4,7 @@ of pictures
 """
 
 number_cases_side = 15
-size_case = 40
+size_sprite = 40
 
 title = "MacGyver - The Game"
 floor = "pictures/floor.png"
