@@ -9,6 +9,9 @@ There are 6 classes:
     - Rules
 """
 
+import pygame
+from pygame.locals import *
+
 import constants
 
 
@@ -37,16 +40,25 @@ class Board:
                         structure_lines.append(letter)
                 self.STRUCTURE.append(structure_lines)
 
-    def display(self, character):
+    def display(self, window):
         """
         This method is to display the game board
         """
-        # copy the liste STRUCTURE in new_structure without to copy
-        # the references of the list STRUCTURE -> the list STRUCTURE
-        # will be not modify if new_structure will be modifiy
-        new_structure = [[letter for letter in line]for line in self.STRUCTURE]
-        new_structure[character.line][character.column] = character.avatar
-        [print("".join(line)) for line in new_structure]
+        
+        wall = pygame.image.load(constants.walls).convert()
+        floor = pygame.image.load(constants.floor)
+        stairs = pygame.image.load(constants.stairs)
+
+        for i, line in enumerate(self.STRUCTURE):
+            for j, column in enumerate(line):
+                coordinate_x = j*constants.size_case
+                coordinate_y = i*constants.size_case
+                if self.STRUCTURE[i][j] == "#":
+                    window.blit(wall, (coordinate_x, coordinate_y))
+                elif self.STRUCTURE[i][j] == "h":
+                    window.blit(stairs, (coordinate_x, coordinate_y))
+                else:
+                    window.blit(floor, (coordinate_x, coordinate_y))
 
 
 class Characters:
