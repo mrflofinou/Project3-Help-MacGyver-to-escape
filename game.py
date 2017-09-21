@@ -21,7 +21,6 @@ class Board:
     - initialization of game board
     - display of game board
     """
-
     #Class attribute to save the structure of the labyrinth in a list
     STRUCTURE = []
 
@@ -44,15 +43,16 @@ class Board:
         """
         This method is to display the game board
         """
-        
+
         wall = pygame.image.load(constants.walls).convert()
-        floor = pygame.image.load(constants.floor)
-        stairs = pygame.image.load(constants.stairs)
+        floor = pygame.image.load(constants.floor).convert()
+        stairs = pygame.image.load(constants.stairs).convert()
 
         for i, line in enumerate(self.STRUCTURE):
             for j, column in enumerate(line):
-                coordinate_x = j*constants.size_case
-                coordinate_y = i*constants.size_case
+                #we calculate the coordinates in pixels for pygame
+                coordinate_x = j * constants.size_sprite
+                coordinate_y = i * constants.size_sprite
                 if self.STRUCTURE[i][j] == "#":
                     window.blit(wall, (coordinate_x, coordinate_y))
                 elif self.STRUCTURE[i][j] == "h":
@@ -67,12 +67,31 @@ class Characters:
     - create a character with:
         .an avatar
         .a position
-    - move the character
     """
     def __init__(self):
-        self.avatar = 'X'
+        self.avatar = 'picture of character'
+        #position in list STRUCTURE
+        self.column = 'the letter of a line of list STRUCTURE'
+        self.line = 'the line of list STRUCTURE'
+        #position in pixels on the window
+        self.pixels_x = 'x coordinate = self.colum * size_sprite'
+        self.pixels_y = 'y coordinate = self.line * size_sprite'
+
+
+class Macgyver(Characters):
+    """
+    This class is use for:
+    - create MacGyver with:
+        .an avatar
+        .his start position
+    - move MacGyver
+    """
+    def __init__(self):
+        self.avatar = pygame.image.load(constants.macgyver).convert_alpha()
         self.column = 0
         self.line = 14
+        self.pixels_x = self.column * constants.size_sprite
+        self.pixels_y = self.line * constants.size_sprite
 
     def move(self, direction, board):
         """
@@ -98,3 +117,18 @@ class Characters:
             if self.column < 14:
                 if board.STRUCTURE[self.line][self.column + 1] != "#":
                     self.column += 1
+
+
+class Murdock(Characters):
+    """
+    This class is use for:
+    - create Murdock with:
+        .an avatar
+        .his position
+    """
+    def __init__(self):
+        self.avatar = pygame.image.load(constants.murdock).convert_alpha()
+        self.column = 14
+        self.line = 0
+        self.pixels_x = self.column * constants.size_sprite
+        self.pixels_y = self.line * constants.size_sprite
