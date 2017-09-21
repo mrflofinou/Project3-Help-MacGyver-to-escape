@@ -43,7 +43,6 @@ class Board:
         """
         This method is to display the game board
         """
-
         wall = pygame.image.load(constants.walls).convert()
         floor = pygame.image.load(constants.floor).convert()
         stairs = pygame.image.load(constants.stairs).convert()
@@ -55,7 +54,7 @@ class Board:
                 coordinate_y = i * constants.size_sprite
                 if self.STRUCTURE[i][j] == "#":
                     window.blit(wall, (coordinate_x, coordinate_y))
-                elif self.STRUCTURE[i][j] == "h":
+                elif self.STRUCTURE[i][j] == "h" or self.STRUCTURE[i][j] == "o":
                     window.blit(stairs, (coordinate_x, coordinate_y))
                 else:
                     window.blit(floor, (coordinate_x, coordinate_y))
@@ -96,27 +95,45 @@ class Macgyver(Characters):
     def move(self, direction, board):
         """
         This method allow the movement of the character in the labyrinth
-        press "o" to go up
-        press "l" to go down
-        press "k" to go left
-        press "m" to go right
         """
-        if direction == "o": #up
+        if direction == "up":
             if self.line > 0:
                 if board.STRUCTURE[self.line - 1][self.column] != "#":
                     self.line -= 1
-        if direction == "l": #down
+                    self.pixels_y =  self.line * constants.size_sprite
+                    #movement with stairs
+                    if board.STRUCTURE[self.line][self.column] == "o":
+                        self.column = 4
+                        self.line = 3
+                        self.pixels_x = self.column * constants.size_sprite
+                        self.pixels_y = self.line * constants.size_sprite
+        if direction == "down":
             if self.line < 14:
                 if board.STRUCTURE[self.line + 1][self.column] != "#":
                     self.line += 1
-        if direction == "k": #left
+                    self.pixels_y =  self.line * constants.size_sprite
+                    #movement with stairs
+                    if board.STRUCTURE[self.line][self.column] == "h":
+                        self.column = 14
+                        self.line = 4
+                        self.pixels_x = self.column * constants.size_sprite
+                        self.pixels_y = self.line * constants.size_sprite
+        if direction == "left":
             if self.column > 0:
                 if board.STRUCTURE[self.line][self.column - 1] != "#":
                     self.column -= 1
-        if direction == "m": #right
+                    self.pixels_x =  self.column * constants.size_sprite
+        if direction == "right":
             if self.column < 14:
                 if board.STRUCTURE[self.line][self.column + 1] != "#":
                     self.column += 1
+                    self.pixels_x =  self.column * constants.size_sprite
+                    #movement with stairs
+                    if board.STRUCTURE[self.line][self.column] == "o":
+                        self.column = 4
+                        self.line = 3
+                        self.pixels_x = self.column * constants.size_sprite
+                        self.pixels_y = self.line * constants.size_sprite
 
 
 class Murdock(Characters):
