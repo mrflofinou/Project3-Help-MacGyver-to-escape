@@ -34,7 +34,7 @@ def main():
     murdock = game.Murdock()
     # Creation of objects from class Items
     needle = game.Items(board)
-    plasctic = game.Items(board)
+    plastic = game.Items(board)
     poison = game.Items(board)
     play = 1
     while play:
@@ -47,16 +47,20 @@ def main():
             if event.type == KEYDOWN:
                 if event.key == K_RIGHT:
                     mac.move('right', board)
+                    mac.catch(needle, plastic, poison)
                 if event.key == K_LEFT:
                     mac.move('left', board)
+                    mac.catch(needle, plastic, poison)
                 if event.key == K_UP:
                     mac.move('up', board)
+                    mac.catch(needle, plastic, poison)
                 if event.key == K_DOWN:
                     mac.move('down', board)
+                    mac.catch(needle, plastic, poison)
         # Display the labyrinth in the window
         board.display(window)
         window.blit(needle.avatar, (needle.pixels_x, needle.pixels_y))
-        window.blit(plasctic.avatar, (plasctic.pixels_x, plasctic.pixels_y))
+        window.blit(plastic.avatar, (plastic.pixels_x, plastic.pixels_y))
         window.blit(poison.avatar, (poison.pixels_x, poison.pixels_y))
         window.blit(mac.avatar, (mac.pixels_x, mac.pixels_y))
         window.blit(murdock.avatar, (murdock.pixels_x, murdock.pixels_y))
