@@ -8,6 +8,7 @@ There are 6 classes:
     - Items
     - Rules
 """
+import random
 
 import pygame
 from pygame.locals import *
@@ -21,7 +22,7 @@ class Board:
     - initialization of game board
     - display of game board
     """
-    #Class attribute to save the structure of the labyrinth in a list
+    # Class attribute to save the structure of the labyrinth in a list
     STRUCTURE = []
 
     def __init__(self):
@@ -29,8 +30,8 @@ class Board:
         This method is to initialize the game board
         from the file "structure" wich contains the structure of the labyrinth
         """
-        #Read the file "structure" and save the structure of the labyrinth
-        #as a list in STRUCTURE[]
+        # Read the file "structure" and save the structure of the labyrinth
+        # as a list in STRUCTURE[]
         with open("structure", "r") as labyrinth:
             for line in labyrinth:
                 structure_lines = []
@@ -49,7 +50,7 @@ class Board:
 
         for i, line in enumerate(self.STRUCTURE):
             for j, column in enumerate(line):
-                #we calculate the coordinates in pixels for pygame
+                # we calculate the coordinates in pixels for pygame
                 coordinate_x = j * constants.size_sprite
                 coordinate_y = i * constants.size_sprite
                 if self.STRUCTURE[i][j] == "#":
@@ -69,10 +70,10 @@ class Characters:
     """
     def __init__(self):
         self.avatar = 'picture of character'
-        #position in list STRUCTURE
+        # Position in list STRUCTURE
         self.column = 'the letter of a line of list STRUCTURE'
         self.line = 'the line of list STRUCTURE'
-        #position in pixels on the window
+        # Position in pixels on the window
         self.pixels_x = 'x coordinate = self.colum * size_sprite'
         self.pixels_y = 'y coordinate = self.line * size_sprite'
 
@@ -101,7 +102,7 @@ class Macgyver(Characters):
                 if board.STRUCTURE[self.line - 1][self.column] != "#":
                     self.line -= 1
                     self.pixels_y =  self.line * constants.size_sprite
-                    #movement with stairs
+                    # Movement with stairs
                     if board.STRUCTURE[self.line][self.column] == "o":
                         self.column = 4
                         self.line = 3
@@ -112,7 +113,7 @@ class Macgyver(Characters):
                 if board.STRUCTURE[self.line + 1][self.column] != "#":
                     self.line += 1
                     self.pixels_y =  self.line * constants.size_sprite
-                    #movement with stairs
+                    # Movement with stairs
                     if board.STRUCTURE[self.line][self.column] == "h":
                         self.column = 14
                         self.line = 4
@@ -128,7 +129,7 @@ class Macgyver(Characters):
                 if board.STRUCTURE[self.line][self.column + 1] != "#":
                     self.column += 1
                     self.pixels_x =  self.column * constants.size_sprite
-                    #movement with stairs
+                    # Movement with stairs
                     if board.STRUCTURE[self.line][self.column] == "o":
                         self.column = 4
                         self.line = 3
@@ -147,5 +148,25 @@ class Murdock(Characters):
         self.avatar = pygame.image.load(constants.murdock).convert_alpha()
         self.column = 14
         self.line = 0
+        self.pixels_x = self.column * constants.size_sprite
+        self.pixels_y = self.line * constants.size_sprite
+
+
+class Items:
+    """
+    This class is use for:
+    - create an item with:
+        .an avatar
+        .a random position on the game board
+    """
+    def __init__(self, board):
+        self.avatar = pygame.image.load(constants.item).convert_alpha()
+        self.column = random.randint(0, constants.number_cases_side - 1)
+        self.line = random.randint(0, constants.number_cases_side - 1)
+        # We check the random position is not a wall, a stair, start position
+        # or arrival position
+        while board.STRUCTURE[self.line][self.column] != ".":
+            self.column = random.randint(0, constants.number_cases_side - 1)
+            self.line = random.randint(0, constants.number_cases_side - 1)
         self.pixels_x = self.column * constants.size_sprite
         self.pixels_y = self.line * constants.size_sprite
