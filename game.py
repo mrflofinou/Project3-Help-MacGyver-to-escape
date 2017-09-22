@@ -3,7 +3,7 @@ This file contains the classes of the programm
 There are 6 classes:
      - Characters
         - MacGyver
-        - Murdock
+        - Murdoc
     - Board
     - Items
     - Rules
@@ -159,15 +159,15 @@ class Macgyver(Characters):
             poison.pixels_y = poison.line * constants.size_sprite
 
 
-class Murdock(Characters):
+class Murdoc(Characters):
     """
     This class is use for:
-    - create Murdock with:
+    - create Murdoc with:
         .an avatar
         .his position
     """
     def __init__(self):
-        self.avatar = pygame.image.load(constants.murdock).convert_alpha()
+        self.avatar = pygame.image.load(constants.murdoc).convert_alpha()
         self.column = 14
         self.line = 0
         self.pixels_x = self.column * constants.size_sprite
@@ -192,3 +192,17 @@ class Items:
             self.line = random.randint(0, constants.number_cases_side - 1)
         self.pixels_x = self.column * constants.size_sprite
         self.pixels_y = self.line * constants.size_sprite
+
+
+class Rules:
+    @classmethod
+    def win(self, character, board):
+        pygame.init()
+        window_end = pygame.display.set_mode((550, 380))
+        if board.STRUCTURE[character.line][character.column] == "a":
+            if character.number_items == 3:
+                window_end.blit(pygame.image.load(constants.win).convert(), (0, 0))
+                pygame.display.flip()
+            else:
+                window_end.blit(pygame.image.load(constants.lose).convert(), (0, 0))
+                pygame.display.flip()
