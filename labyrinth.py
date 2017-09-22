@@ -30,8 +30,8 @@ def main():
     board = game.Board()
     # Creation of object mac from class Macgyver
     mac = game.Macgyver()
-    # Creation of object murdock from class Murdock
-    murdock = game.Murdock()
+    # Creation of object murdoc from class Murdock
+    murdoc = game.Murdoc()
     # Creation of objects from class Items
     needle = game.Items(board)
     plastic = game.Items(board)
@@ -63,11 +63,19 @@ def main():
         window.blit(plastic.avatar, (plastic.pixels_x, plastic.pixels_y))
         window.blit(poison.avatar, (poison.pixels_x, poison.pixels_y))
         window.blit(mac.avatar, (mac.pixels_x, mac.pixels_y))
-        window.blit(murdock.avatar, (murdock.pixels_x, murdock.pixels_y))
+        window.blit(murdoc.avatar, (murdoc.pixels_x, murdoc.pixels_y))
         pygame.display.flip()
         if board.STRUCTURE[mac.line][mac.column] == "a":
-            print("\nYOU WIN !")
             play = 0
+
+    end = 1
+    start_ticks = pygame.time.get_ticks() # Starter tick
+    # Final loop to display the end window to know if you win or not
+    while end:
+        seconds = (pygame.time.get_ticks()-start_ticks)/1000 # Calculate how many seconds
+        game.Rules.win(mac, board)
+        if seconds > 4: # If more than 5 seconds close the game
+            end = 0
 
 if __name__ == "__main__":
     main()
