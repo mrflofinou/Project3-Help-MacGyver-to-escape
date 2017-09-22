@@ -195,6 +195,9 @@ class Items:
 
 
 class Rules:
+    """
+    This class manage the end of the game
+    """
     @classmethod
     def win(self, character, board):
         pygame.init()
