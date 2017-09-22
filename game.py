@@ -85,6 +85,7 @@ class Macgyver(Characters):
         .an avatar
         .his start position
     - move MacGyver
+    - catch items
     """
     def __init__(self):
         self.avatar = pygame.image.load(constants.macgyver).convert_alpha()
@@ -92,6 +93,7 @@ class Macgyver(Characters):
         self.line = 14
         self.pixels_x = self.column * constants.size_sprite
         self.pixels_y = self.line * constants.size_sprite
+        self.number_items = 0
 
     def move(self, direction, board):
         """
@@ -104,8 +106,8 @@ class Macgyver(Characters):
                     self.pixels_y =  self.line * constants.size_sprite
                     # Movement with stairs
                     if board.STRUCTURE[self.line][self.column] == "o":
-                        self.column = 4
-                        self.line = 3
+                        self.column = 4 # Position of stairs in STRUCTURE
+                        self.line = 3 # Position of stairs in STRUCTURE
                         self.pixels_x = self.column * constants.size_sprite
                         self.pixels_y = self.line * constants.size_sprite
         if direction == "down":
@@ -115,8 +117,8 @@ class Macgyver(Characters):
                     self.pixels_y =  self.line * constants.size_sprite
                     # Movement with stairs
                     if board.STRUCTURE[self.line][self.column] == "h":
-                        self.column = 14
-                        self.line = 4
+                        self.column = 14 # Position of stairs in STRUCTURE
+                        self.line = 4 # Postion of stairs in STRUCTURE
                         self.pixels_x = self.column * constants.size_sprite
                         self.pixels_y = self.line * constants.size_sprite
         if direction == "left":
@@ -131,10 +133,30 @@ class Macgyver(Characters):
                     self.pixels_x =  self.column * constants.size_sprite
                     # Movement with stairs
                     if board.STRUCTURE[self.line][self.column] == "o":
-                        self.column = 4
-                        self.line = 3
+                        self.column = 4 # Position of stairs in STRUCTURE
+                        self.line = 3 # Position of stairs in STRUCTURE
                         self.pixels_x = self.column * constants.size_sprite
                         self.pixels_y = self.line * constants.size_sprite
+
+    def catch(self, needle, plastic, poison):
+        if needle.column == self.column and needle.line == self.line:
+            self.number_items += 1
+            needle.column = 0
+            needle.line = 15
+            needle.pixels_x = needle.column * constants.size_sprite
+            needle.pixels_y = needle.line * constants.size_sprite
+        if plastic.column == self.column and plastic.line == self.line:
+            self.number_items += 1
+            plastic.column = 0
+            plastic.line = 15
+            plastic.pixels_x = plastic.column * constants.size_sprite
+            plastic.pixels_y = plastic.line * constants.size_sprite
+        if poison.column == self.column and poison.line == self.line:
+            self.number_items += 1
+            poison.column = 0
+            poison.line = 15
+            poison.pixels_x = poison.column * constants.size_sprite
+            poison.pixels_y = poison.line * constants.size_sprite
 
 
 class Murdock(Characters):
