@@ -26,6 +26,9 @@ def main():
     pygame.display.set_caption(constants.title)
     # This is for the character stay in movement whent you stay press on a key
     pygame.key.set_repeat(400, 30)
+    # Pygame module to play music
+    pygame.mixer.music.load(constants.music)
+    pygame.mixer.music.play()
     # Creation of the object board from class Board
     board = game.Board()
     # Creation of object mac from class Macgyver
