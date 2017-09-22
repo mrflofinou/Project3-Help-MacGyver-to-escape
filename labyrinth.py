@@ -17,26 +17,30 @@ def main():
     """
     Main function of the programm
     """
-    #initialization of pygame module
+    # Initialization of pygame module
     pygame.init()
-    #creation of window for display
+    # Creation of window for display
     size_side = constants.number_cases_side * constants.size_sprite
     window = pygame.display.set_mode((size_side, size_side))
-    #Title of window
+    # Title of window
     pygame.display.set_caption(constants.title)
-    #this is for the character stay in movement whent you stay press on a key
+    # This is for the character stay in movement whent you stay press on a key
     pygame.key.set_repeat(400, 30)
-    #creation of the object board from class Board
+    # Creation of the object board from class Board
     board = game.Board()
-    #creation of object mac from class Macgyver
+    # Creation of object mac from class Macgyver
     mac = game.Macgyver()
-    #creation of object murdock from class Murdock
+    # Creation of object murdock from class Murdock
     murdock = game.Murdock()
+    # Creation of objects from class Items
+    needle = game.Items(board)
+    plasctic = game.Items(board)
+    poison = game.Items(board)
     play = 1
     while play:
-        #to limit the framerate
+        # To limit the framerate
         pygame.time.Clock().tick(30)
-        #management of keys with pygame
+        # Management of keys with pygame
         for event in pygame.event.get():
             if event.type == QUIT:
                 play = 0
@@ -49,8 +53,11 @@ def main():
                     mac.move('up', board)
                 if event.key == K_DOWN:
                     mac.move('down', board)
-        #Display the labyrinth in the window
+        # Display the labyrinth in the window
         board.display(window)
+        window.blit(needle.avatar, (needle.pixels_x, needle.pixels_y))
+        window.blit(plasctic.avatar, (plasctic.pixels_x, plasctic.pixels_y))
+        window.blit(poison.avatar, (poison.pixels_x, poison.pixels_y))
         window.blit(mac.avatar, (mac.pixels_x, mac.pixels_y))
         window.blit(murdock.avatar, (murdock.pixels_x, murdock.pixels_y))
         pygame.display.flip()
