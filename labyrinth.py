@@ -21,14 +21,15 @@ def main():
     pygame.init()
     # Creation of window for display
     size_side = constants.number_cases_side * constants.size_sprite
-    window = pygame.display.set_mode((size_side, size_side))
+    # +40 pixels is to display the inventory
+    window = pygame.display.set_mode((size_side, size_side + 40))
     # Title of window
     pygame.display.set_caption(constants.title)
     # This is for the character stay in movement whent you stay press on a key
     pygame.key.set_repeat(400, 30)
-    # Pygame module to play music
-    pygame.mixer.music.load(constants.music)
-    pygame.mixer.music.play()
+    # Pygame module to play music with loops
+    music = pygame.mixer.Sound(constants.music)
+    music.play(loops=1)
     # Creation of the object board from class Board
     board = game.Board()
     # Creation of object mac from class Macgyver
@@ -40,6 +41,7 @@ def main():
     plastic = game.Items(board)
     poison = game.Items(board)
     play = 1
+    end = 1
     while play:
         # To limit the framerate
         pygame.time.Clock().tick(30)
@@ -47,6 +49,7 @@ def main():
         for event in pygame.event.get():
             if event.type == QUIT:
                 play = 0
+                end = 0
             if event.type == KEYDOWN:
                 if event.key == K_RIGHT:
                     mac.move('right', board)
@@ -61,7 +64,8 @@ def main():
                     mac.move('down', board)
                     mac.catch(needle, plastic, poison)
         # Display the labyrinth in the window
-        board.display(window)
+        window.fill((0, 0, 0)) # reset the display to the inventory
+        board.display(window, mac)
         window.blit(needle.avatar, (needle.pixels_x, needle.pixels_y))
         window.blit(plastic.avatar, (plastic.pixels_x, plastic.pixels_y))
         window.blit(poison.avatar, (poison.pixels_x, poison.pixels_y))
@@ -71,7 +75,6 @@ def main():
         if board.STRUCTURE[mac.line][mac.column] == "a":
             play = 0
 
-    end = 1
     start_ticks = pygame.time.get_ticks() # Starter tick
     # Final loop to display the end window to know if you win or not
     while end:
