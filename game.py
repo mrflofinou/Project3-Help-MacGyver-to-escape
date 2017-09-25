@@ -40,14 +40,14 @@ class Board:
                         structure_lines.append(letter)
                 self.STRUCTURE.append(structure_lines)
 
-    def display(self, window):
+    def display(self, window, character):
         """
         This method is to display the game board
         """
+        # To display the structure of labyrinth
         wall = pygame.image.load(constants.walls).convert()
         floor = pygame.image.load(constants.floor).convert()
         stairs = pygame.image.load(constants.stairs).convert()
-
         for i, line in enumerate(self.STRUCTURE):
             for j, column in enumerate(line):
                 # we calculate the coordinates in pixels for pygame
@@ -59,6 +59,14 @@ class Board:
                     window.blit(stairs, (coordinate_x, coordinate_y))
                 else:
                     window.blit(floor, (coordinate_x, coordinate_y))
+        # To display the inventory
+        inventory = pygame.font.SysFont('items', 30, False, True)
+        text = "Items".rjust(3)
+        window.blit(inventory.render(text, True, (255, 255, 255)), (5, 610))
+        items = pygame.font.SysFont('items_number', 30, False, True)
+        if character.number_items > 0:
+            text_items = "x" + str(character.number_items).rjust(3)
+            window.blit(items.render(text_items, True, (255, 255, 255)), (120, 610))
 
 
 class Characters:
@@ -84,6 +92,7 @@ class Macgyver(Characters):
     - create MacGyver with:
         .an avatar
         .his start position
+        .the number of items
     - move MacGyver
     - catch items
     """
@@ -103,7 +112,7 @@ class Macgyver(Characters):
             if self.line > 0:
                 if board.STRUCTURE[self.line - 1][self.column] != "#":
                     self.line -= 1
-                    self.pixels_y =  self.line * constants.size_sprite
+                    self.pixels_y = self.line * constants.size_sprite
                     # Movement with stairs
                     if board.STRUCTURE[self.line][self.column] == "o":
                         self.column = 4 # Position of stairs in STRUCTURE
@@ -114,7 +123,7 @@ class Macgyver(Characters):
             if self.line < 14:
                 if board.STRUCTURE[self.line + 1][self.column] != "#":
                     self.line += 1
-                    self.pixels_y =  self.line * constants.size_sprite
+                    self.pixels_y = self.line * constants.size_sprite
                     # Movement with stairs
                     if board.STRUCTURE[self.line][self.column] == "h":
                         self.column = 14 # Position of stairs in STRUCTURE
@@ -125,12 +134,12 @@ class Macgyver(Characters):
             if self.column > 0:
                 if board.STRUCTURE[self.line][self.column - 1] != "#":
                     self.column -= 1
-                    self.pixels_x =  self.column * constants.size_sprite
+                    self.pixels_x = self.column * constants.size_sprite
         if direction == "right":
             if self.column < 14:
                 if board.STRUCTURE[self.line][self.column + 1] != "#":
                     self.column += 1
-                    self.pixels_x =  self.column * constants.size_sprite
+                    self.pixels_x = self.column * constants.size_sprite
                     # Movement with stairs
                     if board.STRUCTURE[self.line][self.column] == "o":
                         self.column = 4 # Position of stairs in STRUCTURE
@@ -141,19 +150,19 @@ class Macgyver(Characters):
     def catch(self, needle, plastic, poison):
         if needle.column == self.column and needle.line == self.line:
             self.number_items += 1
-            needle.column = 0
+            needle.column = 2
             needle.line = 15
             needle.pixels_x = needle.column * constants.size_sprite
             needle.pixels_y = needle.line * constants.size_sprite
         if plastic.column == self.column and plastic.line == self.line:
             self.number_items += 1
-            plastic.column = 0
+            plastic.column = 2
             plastic.line = 15
             plastic.pixels_x = plastic.column * constants.size_sprite
             plastic.pixels_y = plastic.line * constants.size_sprite
         if poison.column == self.column and poison.line == self.line:
             self.number_items += 1
-            poison.column = 0
+            poison.column = 2
             poison.line = 15
             poison.pixels_x = poison.column * constants.size_sprite
             poison.pixels_y = poison.line * constants.size_sprite
