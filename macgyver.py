@@ -20,9 +20,9 @@ def main():
     # Initialization of pygame module
     pygame.init()
     # Creation of window for display
-    size_side = constants.number_cases_side * constants.size_sprite
-    # +40 pixels is to display the inventory
-    window = pygame.display.set_mode((size_side, size_side + 40))
+    height_size = constants.height_number_sprite * constants.sprite_size
+    width_size = constants.width_number_sprite * constants.sprite_size
+    window = pygame.display.set_mode((width_size, height_size))
     # Title of window
     pygame.display.set_caption(constants.title)
     # This is for the character stay in movement whent you stay press on a key
@@ -32,10 +32,14 @@ def main():
     music.play(loops=1)
     # Creation of the object board from class Board
     board = game.Board()
+    # Creation of the start position of MacGyver
+    position_macgyver = game.Position(14, 0)
+    #Creation of the position of Murdoc
+    position_murdock = game.Position(0, 14)
     # Creation of object mac from class Macgyver
-    mac = game.Macgyver()
+    macgyver = game.Macgyver(position_macgyver)
     # Creation of object murdoc from class Murdock
-    murdoc = game.Murdoc()
+    murdoc = game.Murdoc(position_murdock)
     # Creation of objects from class Items
     needle = game.Items(board)
     plastic = game.Items(board)
@@ -52,35 +56,35 @@ def main():
                 end = 0
             if event.type == KEYDOWN:
                 if event.key == K_RIGHT:
-                    mac.move('right', board)
-                    mac.catch(needle, plastic, poison)
+                    macgyver.move('right', board)
+                    macgyver.catch_if_item(needle, plastic, poison)
                 if event.key == K_LEFT:
-                    mac.move('left', board)
-                    mac.catch(needle, plastic, poison)
+                    macgyver.move('left', board)
+                    macgyver.catch_if_item(needle, plastic, poison)
                 if event.key == K_UP:
-                    mac.move('up', board)
-                    mac.catch(needle, plastic, poison)
+                    macgyver.move('up', board)
+                    macgyver.catch_if_item(needle, plastic, poison)
                 if event.key == K_DOWN:
-                    mac.move('down', board)
-                    mac.catch(needle, plastic, poison)
+                    macgyver.move('down', board)
+                    macgyver.catch_if_item(needle, plastic, poison)
         # Display the labyrinth in the window
         window.fill((0, 0, 0)) # reset the display to the inventory
-        board.display(window, mac)
-        window.blit(needle.avatar, (needle.pixels_x, needle.pixels_y))
-        window.blit(plastic.avatar, (plastic.pixels_x, plastic.pixels_y))
-        window.blit(poison.avatar, (poison.pixels_x, poison.pixels_y))
-        window.blit(mac.avatar, (mac.pixels_x, mac.pixels_y))
-        window.blit(murdoc.avatar, (murdoc.pixels_x, murdoc.pixels_y))
+        board.display(window, macgyver)
+        window.blit(needle.picture, (needle.pixels_x, needle.pixels_y))
+        window.blit(plastic.picture, (plastic.pixels_x, plastic.pixels_y))
+        window.blit(poison.picture, (poison.pixels_x, poison.pixels_y))
+        window.blit(macgyver.avatar, (macgyver.position.pixels_x, macgyver.position.pixels_y))
+        window.blit(murdoc.avatar, (murdoc.position.pixels_x, murdoc.position.pixels_y))
         pygame.display.flip()
-        if board.STRUCTURE[mac.line][mac.column] == "a":
+        if board.STRUCTURE[macgyver.position.line][macgyver.position.column] == "a":
             play = 0
 
     start_ticks = pygame.time.get_ticks() # Starter tick
     # Final loop to display the end window to know if you win or not
     while end:
         seconds = (pygame.time.get_ticks()-start_ticks)/1000 # Calculate how many seconds
-        game.Rules.win(mac, board)
-        if seconds > 4: # If more than 5 seconds close the game
+        game.Rules.win(macgyver, board)
+        if seconds > 4: # If more than 4 seconds close the game
             end = 0
 
 if __name__ == "__main__":
