@@ -3,8 +3,9 @@ This file contains constants of game and paths
 of pictures
 """
 
-number_cases_side = 15
-size_sprite = 40
+width_number_sprite = 15
+height_number_sprite = 16 # The line of the inventory
+sprite_size = 40
 
 title = "MacGyver - The Game"
 floor = "pictures/floor.png"
