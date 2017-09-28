@@ -41,9 +41,11 @@ def main():
     # Creation of object murdoc from class Murdock
     murdoc = game.Murdoc(position_murdock)
     # Creation of objects from class Items
-    needle = game.Items(board)
-    plastic = game.Items(board)
-    poison = game.Items(board)
+    items = [
+            game.Items(board),
+            game.Items(board),
+            game.Items(board)
+            ]
     play = 1
     end = 1
     while play:
@@ -57,22 +59,21 @@ def main():
             if event.type == KEYDOWN:
                 if event.key == K_RIGHT:
                     macgyver.move('right', board)
-                    macgyver.catch_if_item(needle, plastic, poison)
+                    macgyver.catch_if_item(*items)
                 if event.key == K_LEFT:
                     macgyver.move('left', board)
-                    macgyver.catch_if_item(needle, plastic, poison)
+                    macgyver.catch_if_item(*items)
                 if event.key == K_UP:
                     macgyver.move('up', board)
-                    macgyver.catch_if_item(needle, plastic, poison)
+                    macgyver.catch_if_item(*items)
                 if event.key == K_DOWN:
                     macgyver.move('down', board)
-                    macgyver.catch_if_item(needle, plastic, poison)
+                    macgyver.catch_if_item(*items)
         # Display the labyrinth in the window
         window.fill((0, 0, 0)) # reset the display to the inventory
         board.display(window, macgyver)
-        window.blit(needle.picture, (needle.pixels_x, needle.pixels_y))
-        window.blit(plastic.picture, (plastic.pixels_x, plastic.pixels_y))
-        window.blit(poison.picture, (poison.pixels_x, poison.pixels_y))
+        for item in items:
+            window.blit(item.picture, (item.position.pixels_x, item.position.pixels_y))
         window.blit(macgyver.avatar, (macgyver.position.pixels_x, macgyver.position.pixels_y))
         window.blit(murdoc.avatar, (murdoc.position.pixels_x, murdoc.position.pixels_y))
         pygame.display.flip()
