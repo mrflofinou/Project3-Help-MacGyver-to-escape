@@ -41,11 +41,7 @@ def main():
     # Creation of object murdoc from class Murdock
     murdoc = game.Murdoc(position_murdock)
     # Creation of objects from class Items
-    items = [
-            game.Items(board),
-            game.Items(board),
-            game.Items(board)
-            ]
+    items = [game.Items(board), game.Items(board), game.Items(board)]
     play = 1
     end = 1
     while play:
@@ -77,7 +73,7 @@ def main():
         window.blit(macgyver.avatar, (macgyver.position.pixels_x, macgyver.position.pixels_y))
         window.blit(murdoc.avatar, (murdoc.position.pixels_x, murdoc.position.pixels_y))
         pygame.display.flip()
-        if board.STRUCTURE[macgyver.position.line][macgyver.position.column] == "a":
+        if board.STRUCTURE[macgyver.position.line][macgyver.position.column] == board.STRUCTURE[murdoc.position.line][murdoc.position.column]:
             play = 0
 
     start_ticks = pygame.time.get_ticks() # Starter tick
