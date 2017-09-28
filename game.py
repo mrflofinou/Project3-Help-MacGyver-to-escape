@@ -25,6 +25,7 @@ class Board:
     """
     # Class attribute to save the structure of the labyrinth in a list
     STRUCTURE = []
+    FLOOR = []
 
     def __init__(self):
         """
@@ -35,6 +36,13 @@ class Board:
         # as a list in STRUCTURE[]
         with open("structure", "r") as labyrinth:
             self.STRUCTURE = [[letter for letter in line if letter != "\n"]for line in labyrinth]
+        # We save the coordinates of floor and stairs
+        #for the management of the position of items
+        # and the movement with stairs
+        for i, line in enumerate(self.STRUCTURE):
+            for j, column in enumerate(line):
+                    if self.STRUCTURE[i][j] == ".":
+                        self.FLOOR.append((i, j))
 
     def display(self, window, character):
         """
@@ -87,7 +95,6 @@ class Characters:
     """
     def __init__(self, position):
         self.avatar = 'picture of character'
-        # Position in list STRUCTURE
         self.position = position
 
 
@@ -140,25 +147,11 @@ class Macgyver(Characters):
                     if board.STRUCTURE[self.position.line][self.position.column] == "o":
                         self.position = Position(3, 4)
 
-    def catch_if_item(self, needle, plastic, poison):
-        if needle.column == self.position.column and needle.line == self.position.line:
-            self.number_items += 1
-            needle.column = 2
-            needle.line = 15
-            needle.pixels_x = needle.column * constants.sprite_size
-            needle.pixels_y = needle.line * constants.sprite_size
-        if plastic.column == self.position.column and plastic.line == self.position.line:
-            self.number_items += 1
-            plastic.column = 2
-            plastic.line = 15
-            plastic.pixels_x = plastic.column * constants.sprite_size
-            plastic.pixels_y = plastic.line * constants.sprite_size
-        if poison.column == self.position.column and poison.line == self.position.line:
-            self.number_items += 1
-            poison.column = 2
-            poison.line = 15
-            poison.pixels_x = poison.column * constants.sprite_size
-            poison.pixels_y = poison.line * constants.sprite_size
+    def catch_if_item(self, *items):
+        for item in items:
+            if item.position.column == self.position.column and item.position.line == self.position.line:
+                self.number_items += 1
+                item.position = Position(15, 2)
 
 
 class Murdoc(Characters):
@@ -181,16 +174,18 @@ class Items:
         .a random position on the game board
     """
     def __init__(self, board):
+        """
+        This method find a random position for the items, on the labyrinth
+        """
         self.picture = pygame.image.load(constants.item).convert_alpha()
-        self.column = random.randint(0, len(board.STRUCTURE) - 1)
-        self.line = random.randint(0, len(board.STRUCTURE) - 1)
-        # We check the random position is not a wall, a stair, start position
-        # or arrival position
-        while board.STRUCTURE[self.line][self.column] != ".":
-            self.column = random.randint(0, len(board.STRUCTURE) - 1)
-            self.line = random.randint(0, len(board.STRUCTURE) - 1)
-        self.pixels_x = self.column * constants.sprite_size
-        self.pixels_y = self.line * constants.sprite_size
+        # We find a random index to get a random element of the list FLOOR
+        random_index = random.randint(0, len(board.FLOOR) - 1)
+        # The element of the list FLOOR is use for the position of the item
+        random_line, random_column = board.FLOOR[random_index]
+        self.position = Position(random_line, random_column)
+        # We delete the element of the list to be sure the next item will not
+        # have the same position of the others items
+        del board.FLOOR[random_index]
 
 
 class Rules:
