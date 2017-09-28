@@ -1,6 +1,6 @@
 """
 This file contains the classes of the programm
-There are 6 classes:
+There are 7 classes:
     - Board
     - Position
     - Characters
@@ -25,7 +25,10 @@ class Board:
     """
     # Class attribute to save the structure of the labyrinth in a list
     STRUCTURE = []
+    # We save each type of element in a list
     FLOOR = []
+    WALLS = []
+    STAIRS = []
 
     def __init__(self):
         """
@@ -36,13 +39,17 @@ class Board:
         # as a list in STRUCTURE[]
         with open("structure", "r") as labyrinth:
             self.STRUCTURE = [[letter for letter in line if letter != "\n"]for line in labyrinth]
-        # We save the coordinates of floor and stairs
-        #for the management of the position of items
-        # and the movement with stairs
+        # We save the coordinates of all of elements for the management of
+        # movements of MacGyver, the position of items
+        # and the movement with stairs
         for i, line in enumerate(self.STRUCTURE):
             for j, column in enumerate(line):
                     if self.STRUCTURE[i][j] == ".":
                         self.FLOOR.append((i, j))
+                    if self.STRUCTURE[i][j] == "#":
+                        self.WALLS.append((i, j))
+                    if self.STRUCTURE[i][j] == "l":
+                        self.STAIRS.append((i, j))
 
     def display(self, window, character):
         """
@@ -59,7 +66,7 @@ class Board:
                 coordinate_y = i * constants.sprite_size
                 if self.STRUCTURE[i][j] == "#":
                     window.blit(wall, (coordinate_x, coordinate_y))
-                elif self.STRUCTURE[i][j] == "h" or self.STRUCTURE[i][j] == "o":
+                elif self.STRUCTURE[i][j] == "l":
                     window.blit(stairs, (coordinate_x, coordinate_y))
                 else:
                     window.blit(floor, (coordinate_x, coordinate_y))
@@ -105,13 +112,28 @@ class Macgyver(Characters):
         .an avatar
         .his start position
         .the number of items
+    - __stairs : move with stairs
     - move MacGyver
     - catch if items
     """
     def __init__(self, position):
+        """
+        This method create MacGyver with his avatar and start position
+        """
         self.avatar = pygame.image.load(constants.macgyver).convert_alpha()
         self.position = position
         self.number_items = 0
+
+    def __stairs(self, board):
+        """
+        This private method manage the movement with stairs
+        """
+        line_stair_one, column_stair_one = board.STAIRS[0]
+        line_stair_two, column_stair_two = board.STAIRS[1]
+        if (self.position.line, self.position.column) == (line_stair_one, column_stair_one):
+            self.position = Position(line_stair_two, column_stair_two)
+        elif (self.position.line, self.position.column) == (line_stair_two, column_stair_two):
+            self.position = Position(line_stair_one, column_stair_one)
 
     def move(self, direction, board):
         """
@@ -119,35 +141,38 @@ class Macgyver(Characters):
         """
         if direction == "up":
             if self.position.line > 0:
-                if board.STRUCTURE[self.position.line - 1][self.position.column] != "#":
+                if (self.position.line - 1, self.position.column) not in board.WALLS:
                     self.position.line -= 1
                     self.position.pixels_y = self.position.line * constants.sprite_size
                     # Movement with stairs
-                    if board.STRUCTURE[self.position.line][self.position.column] == "o":
-                        self.position = Position(3, 4)
+                    self.__stairs(board)
         if direction == "down":
             if self.position.line < 14:
-                if board.STRUCTURE[self.position.line + 1][self.position.column] != "#":
+                if (self.position.line + 1, self.position.column) not in board.WALLS:
                     self.position.line += 1
                     self.position.pixels_y = self.position.line * constants.sprite_size
                     # Movement with stairs
-                    if  board.STRUCTURE[self.position.line][self.position.column] == "h":
-                        self.position = Position(4, 14)
+                    self.__stairs(board)
         if direction == "left":
             if self.position.column > 0:
-                if board.STRUCTURE[self.position.line][self.position.column - 1] != "#":
+                if (self.position.line, self.position.column - 1) not in board.WALLS:
                     self.position.column -= 1
                     self.position.pixels_x = self.position.column * constants.sprite_size
+                    # Movement with stairs
+                    self.__stairs(board)
         if direction == "right":
             if self.position.column < 14:
-                if board.STRUCTURE[self.position.line][self.position.column + 1] != "#":
+                if (self.position.line, self.position.column + 1) not in board.WALLS:
                     self.position.column += 1
                     self.position.pixels_x = self.position.column * constants.sprite_size
                     # Movement with stairs
-                    if board.STRUCTURE[self.position.line][self.position.column] == "o":
-                        self.position = Position(3, 4)
+                    self.__stairs(board)
 
     def catch_if_item(self, *items):
+        """
+        This method allow to MacGyver to catch an item if there is one on his position
+        The item is move in the counter
+        """
         for item in items:
             if item.position.column == self.position.column and item.position.line == self.position.line:
                 self.number_items += 1
@@ -162,6 +187,9 @@ class Murdoc(Characters):
         .his position
     """
     def __init__(self, position):
+        """
+        This method create Murdoc with his avatar and his position
+        """
         self.avatar = pygame.image.load(constants.murdoc).convert_alpha()
         self.position = position
 
@@ -194,6 +222,9 @@ class Rules:
     """
     @classmethod
     def win(self, character, board):
+        """
+        This method manage the end of the game
+        """
         pygame.init()
         window_end = pygame.display.set_mode((550, 380))
         if character.number_items == 3:
