@@ -42,6 +42,7 @@ def main():
     murdoc = game.Murdoc(position_murdock)
     # Creation of objects from class Items
     items = [game.Items(board), game.Items(board), game.Items(board)]
+    instances = [macgyver, murdoc] + items
     play = 1
     end = 1
     while play:
@@ -68,18 +69,16 @@ def main():
         # Display the labyrinth in the window
         window.fill((0, 0, 0)) # reset the display to the inventory
         board.display(window, macgyver)
-        for item in items:
-            window.blit(item.picture, (item.position.pixels_x, item.position.pixels_y))
-        window.blit(macgyver.avatar, (macgyver.position.pixels_x, macgyver.position.pixels_y))
-        window.blit(murdoc.avatar, (murdoc.position.pixels_x, murdoc.position.pixels_y))
+        for instance in instances:
+            window.blit(instance.picture, (instance.position.pixels_x, instance.position.pixels_y))
         pygame.display.flip()
         if board.STRUCTURE[macgyver.position.line][macgyver.position.column] == board.STRUCTURE[murdoc.position.line][murdoc.position.column]:
             play = 0
-
     start_ticks = pygame.time.get_ticks() # Starter tick
     # Final loop to display the end window to know if you win or not
     while end:
-        seconds = (pygame.time.get_ticks()-start_ticks)/1000 # Calculate how many seconds
+        # Calculate how many seconds
+        seconds = (pygame.time.get_ticks()-start_ticks)/1000
         game.Rules.win(macgyver, board)
         if seconds > 4: # If more than 4 seconds close the game
             end = 0
