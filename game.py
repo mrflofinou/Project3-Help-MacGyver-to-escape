@@ -64,9 +64,9 @@ class Board:
                 # we calculate the coordinates in pixels for pygame
                 coordinate_x = j * constants.sprite_size
                 coordinate_y = i * constants.sprite_size
-                if self.STRUCTURE[i][j] == "#":
+                if (i, j) in self.WALLS:
                     window.blit(wall, (coordinate_x, coordinate_y))
-                elif self.STRUCTURE[i][j] == "l":
+                elif (i, j) in self.STAIRS:
                     window.blit(stairs, (coordinate_x, coordinate_y))
                 else:
                     window.blit(floor, (coordinate_x, coordinate_y))
@@ -75,9 +75,8 @@ class Board:
         text = "Items".rjust(3)
         window.blit(inventory.render(text, True, (255, 255, 255)), (5, 610))
         items = pygame.font.SysFont('items_number', 30, False, True)
-        if character.number_items > 0:
-            text_items = "x" + str(character.number_items).rjust(3)
-            window.blit(items.render(text_items, True, (255, 255, 255)), (120, 610))
+        text_items = "x" + str(character.number_items).rjust(3)
+        window.blit(items.render(text_items, True, (255, 255, 255)), (120, 610))
 
 
 class Position:
@@ -101,7 +100,7 @@ class Characters:
         .a position
     """
     def __init__(self, position):
-        self.avatar = 'picture of character'
+        self.picture = 'picture of character'
         self.position = position
 
 
@@ -120,7 +119,7 @@ class Macgyver(Characters):
         """
         This method create MacGyver with his avatar and start position
         """
-        self.avatar = pygame.image.load(constants.macgyver).convert_alpha()
+        self.picture = pygame.image.load(constants.macgyver).convert_alpha()
         self.position = position
         self.number_items = 0
 
@@ -174,7 +173,7 @@ class Macgyver(Characters):
         The item is move in the counter
         """
         for item in items:
-            if item.position.column == self.position.column and item.position.line == self.position.line:
+            if (item.position.line, item.position.column) == (self.position.line, self.position.column):
                 self.number_items += 1
                 item.position = Position(15, 2)
 
@@ -190,7 +189,7 @@ class Murdoc(Characters):
         """
         This method create Murdoc with his avatar and his position
         """
-        self.avatar = pygame.image.load(constants.murdoc).convert_alpha()
+        self.picture = pygame.image.load(constants.murdoc).convert_alpha()
         self.position = position
 
 
