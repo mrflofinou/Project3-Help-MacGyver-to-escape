@@ -1,13 +1,16 @@
 """
 This file contains the classes of the programm
-There are 7 classes:
+There are 10 classes:
     - Board
     - Position
-    - Characters
+    - Character
         - MacGyver
         - Murdoc
-    - Items
-    - Rules
+    - Item
+        - Needle
+        - Tube
+        - Poison
+    - Rule
 """
 import random
 
@@ -17,71 +20,9 @@ from pygame.locals import *
 import constants
 
 
-class Board:
-    """
-    This class is use for:
-    - initialization of game board
-    - display of game board
-    """
-    # Class attribute to save the structure of the labyrinth in a list
-    STRUCTURE = []
-    # We save each type of element in a list
-    FLOOR = []
-    WALLS = []
-    STAIRS = []
-
-    def __init__(self):
-        """
-        This method is to initialize the game board
-        from the file "structure" wich contains the structure of the labyrinth
-        """
-        # Read the file "structure" and save the structure of the labyrinth
-        # as a list in STRUCTURE[]
-        with open("structure", "r") as labyrinth:
-            self.STRUCTURE = [[letter for letter in line if letter != "\n"]for line in labyrinth]
-        # We save the coordinates of all of elements for the management of
-        # movements of MacGyver, the position of items
-        # and the movement with stairs
-        for i, line in enumerate(self.STRUCTURE):
-            for j, column in enumerate(line):
-                    if self.STRUCTURE[i][j] == ".":
-                        self.FLOOR.append((i, j))
-                    if self.STRUCTURE[i][j] == "#":
-                        self.WALLS.append((i, j))
-                    if self.STRUCTURE[i][j] == "l":
-                        self.STAIRS.append((i, j))
-
-    def display(self, window, character):
-        """
-        This method is to display the game board
-        """
-        # To display the structure of labyrinth
-        wall = pygame.image.load(constants.walls).convert()
-        floor = pygame.image.load(constants.floor).convert()
-        stairs = pygame.image.load(constants.stairs).convert()
-        for i, line in enumerate(self.STRUCTURE):
-            for j, column in enumerate(line):
-                # we calculate the coordinates in pixels for pygame
-                coordinate_x = j * constants.sprite_size
-                coordinate_y = i * constants.sprite_size
-                if (i, j) in self.WALLS:
-                    window.blit(wall, (coordinate_x, coordinate_y))
-                elif (i, j) in self.STAIRS:
-                    window.blit(stairs, (coordinate_x, coordinate_y))
-                else:
-                    window.blit(floor, (coordinate_x, coordinate_y))
-        # To display the inventory
-        inventory = pygame.font.SysFont('items', 30, False, True)
-        text = "Items".rjust(3)
-        window.blit(inventory.render(text, True, (255, 255, 255)), (5, 610))
-        items = pygame.font.SysFont('items_number', 30, False, True)
-        text_items = "x" + str(character.number_items).rjust(3)
-        window.blit(items.render(text_items, True, (255, 255, 255)), (120, 610))
-
-
 class Position:
     """
-    This class manage the position of character and items
+    This class manages the position of character and items
     """
     def __init__(self, line, column):
         # Position in list STRUCTURE
@@ -92,9 +33,52 @@ class Position:
         self.pixels_y = self.line * constants.sprite_size
 
 
-class Characters:
+class Board:
     """
-    This class is use for:
+    This class is used for:
+    - initialization of game board
+    - display of game board
+    """
+    # Class attribute to save the structure of the labyrinth in a list
+    STRUCTURE = []
+
+    def __init__(self):
+        """
+        This method is to initialize the game board
+        from the file "structure" wich contains the structure of the labyrinth
+        """
+        # Read the file "structure" and save the structure of the labyrinth
+        # as a list in STRUCTURE[]
+        with open("structure", "r") as labyrinth:
+            self.STRUCTURE = [[letter for letter in line if letter != "\n"] for line in labyrinth]
+
+
+    def display(self, window, character):
+        """
+        This method is to display the game board
+        """
+        # To display the structure of labyrinth
+        wall_picture = pygame.image.load(constants.walls).convert()
+        floor_picture = pygame.image.load(constants.floor).convert()
+        stairs_picture = pygame.image.load(constants.stairs).convert()
+        for i, line in enumerate(self.STRUCTURE):
+            for j, column in enumerate(line):
+                position = Position(i, j)
+                if self.STRUCTURE[i][j] == constants.wall_symbol:
+                    window.blit(wall_picture, (position.pixels_x, position.pixels_y))
+                elif self.STRUCTURE[i][j] == constants.stairs_symbol:
+                    window.blit(stairs_picture, (position.pixels_x, position.pixels_y))
+                else:
+                    window.blit(floor_picture, (position.pixels_x, position.pixels_y))
+        # To display the inventory
+        inventory = pygame.font.SysFont('items', 30, False, True)
+        text = "Items:".rjust(3)
+        window.blit(inventory.render(text, True, (255, 255, 255)), (5, 610))
+
+
+class Character:
+    """
+    This class is used for:
     - create a character with:
         .an avatar
         .a position
@@ -104,9 +88,9 @@ class Characters:
         self.position = position
 
 
-class Macgyver(Characters):
+class Macgyver(Character):
     """
-    This class is use for:
+    This class is used for:
     - create MacGyver with:
         .an avatar
         .his start position
@@ -117,105 +101,141 @@ class Macgyver(Characters):
     """
     def __init__(self, position):
         """
-        This method create MacGyver with his avatar and start position
+        This method creates MacGyver with his avatar and start position
         """
         self.picture = pygame.image.load(constants.macgyver).convert_alpha()
         self.position = position
         self.number_items = 0
 
-    def __stairs(self, board):
+    def _take_stairs(self, board):
         """
-        This private method manage the movement with stairs
+        This private method manages the movement with stairs
         """
-        line_stair_one, column_stair_one = board.STAIRS[0]
-        line_stair_two, column_stair_two = board.STAIRS[1]
-        if (self.position.line, self.position.column) == (line_stair_one, column_stair_one):
-            self.position = Position(line_stair_two, column_stair_two)
-        elif (self.position.line, self.position.column) == (line_stair_two, column_stair_two):
-            self.position = Position(line_stair_one, column_stair_one)
+        if (self.position.line, self.position.column) == (3, 4): # Position of stairs one
+            self.position = Position(4, 14) # Postion of stairs 2
+        elif (self.position.line, self.position.column) == (4, 14): # Postion of stairs 2
+            self.position = Position(3, 4) # Position of stairs one
 
     def move(self, direction, board):
         """
-        This method allow the movement of the character in the labyrinth
+        This method allows the movement of the character in the labyrinth
         """
         if direction == "up":
             if self.position.line > 0:
-                if (self.position.line - 1, self.position.column) not in board.WALLS:
+                if board.STRUCTURE[self.position.line - 1][self.position.column] != constants.wall_symbol:
                     self.position.line -= 1
-                    self.position.pixels_y = self.position.line * constants.sprite_size
+                    self.position = Position(self.position.line, self.position.column)
                     # Movement with stairs
-                    self.__stairs(board)
+                    self._take_stairs(board)
         if direction == "down":
-            if self.position.line < 14:
-                if (self.position.line + 1, self.position.column) not in board.WALLS:
+            if self.position.line < len(board.STRUCTURE) - 1:
+                if board.STRUCTURE[self.position.line + 1][self.position.column] != constants.wall_symbol:
                     self.position.line += 1
-                    self.position.pixels_y = self.position.line * constants.sprite_size
+                    self.position = Position(self.position.line, self.position.column)
                     # Movement with stairs
-                    self.__stairs(board)
+                    self._take_stairs(board)
         if direction == "left":
             if self.position.column > 0:
-                if (self.position.line, self.position.column - 1) not in board.WALLS:
+                if board.STRUCTURE[self.position.line][self.position.column - 1] != constants.wall_symbol:
                     self.position.column -= 1
-                    self.position.pixels_x = self.position.column * constants.sprite_size
+                    self.position = Position(self.position.line, self.position.column)
                     # Movement with stairs
-                    self.__stairs(board)
+                    self._take_stairs(board)
         if direction == "right":
-            if self.position.column < 14:
-                if (self.position.line, self.position.column + 1) not in board.WALLS:
+            if self.position.column < len(board.STRUCTURE) - 1:
+                if board.STRUCTURE[self.position.line][self.position.column + 1] != constants.wall_symbol:
                     self.position.column += 1
-                    self.position.pixels_x = self.position.column * constants.sprite_size
+                    self.position = Position(self.position.line, self.position.column)
                     # Movement with stairs
-                    self.__stairs(board)
+                    self._take_stairs(board)
 
     def catch_if_item(self, *items):
         """
-        This method allow to MacGyver to catch an item if there is one on his position
+        This method allows to MacGyver to catch an item if there is one on his position
         The item is move in the counter
         """
         for item in items:
             if (item.position.line, item.position.column) == (self.position.line, self.position.column):
                 self.number_items += 1
-                item.position = Position(15, 2)
+                if self.number_items == 1:
+                    item.position = Position(15, 2)
+                elif self.number_items == 2:
+                    item.position = Position(15, 3)
+                else:
+                    item.position = Position(15, 4)
 
-
-class Murdoc(Characters):
+class Murdoc(Character):
     """
-    This class is use for:
+    This class is used for:
     - create Murdoc with:
         .an avatar
         .his position
     """
     def __init__(self, position):
         """
-        This method create Murdoc with his avatar and his position
+        This method creates Murdoc with his avatar and his position
         """
         self.picture = pygame.image.load(constants.murdoc).convert_alpha()
         self.position = position
 
 
-class Items:
+class Item:
     """
-    This class is use for:
+    This class is used for:
     - create an item with:
-        .an avatar
+        .a picture
         .a random position on the game board
     """
     def __init__(self, board):
         """
-        This method find a random position for the items, on the labyrinth
+        This method creates an item with a picture and a random position
         """
         self.picture = pygame.image.load(constants.item).convert_alpha()
-        # We find a random index to get a random element of the list FLOOR
-        random_index = random.randint(0, len(board.FLOOR) - 1)
-        # The element of the list FLOOR is use for the position of the item
-        random_line, random_column = board.FLOOR[random_index]
-        self.position = Position(random_line, random_column)
-        # We delete the element of the list to be sure the next item will not
-        # have the same position of the others items
-        del board.FLOOR[random_index]
+        self.position = self._random_position(board)
+
+    def _random_position(self, board):
+        """
+        This method calculates a random position for an item
+        """
+        random_line = random.randint(0, len(board.STRUCTURE) - 1)
+        random_column = random.randint(0, len(board.STRUCTURE) - 1)
+        # We check the random position is not a wall, a stair, start position
+        # or arrival position
+        while board.STRUCTURE[random_line][random_column] != constants.floor_symbol:
+            random_line = random.randint(0, len(board.STRUCTURE) - 1)
+            random_column = random.randint(0, len(board.STRUCTURE) - 1)
+        board.STRUCTURE[random_line][random_column] = constants.item_symbol
+        return Position(random_line, random_column)
 
 
-class Rules:
+class Needle(Item):
+    """
+    Create a needle
+    """
+    def __init__(self, board):
+        self.picture = pygame.image.load(constants.needle).convert_alpha()
+        self.position = self._random_position(board)
+
+
+class Tube(Item):
+    """
+    Create a tube
+    """
+    def __init__(self, board):
+        self.picture = pygame.image.load(constants.tube).convert_alpha()
+        self.position = self._random_position(board)
+
+
+class Poison(Item):
+    """
+    create a poison
+    """
+    def __init__(self, board):
+        self.picture = pygame.image.load(constants.poison).convert_alpha()
+        self.position = self._random_position(board)
+
+
+class Rule:
     """
     This class manage the end of the game
     """

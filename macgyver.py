@@ -32,17 +32,16 @@ def main():
     music.play(loops=1)
     # Creation of the object board from class Board
     board = game.Board()
-    # Creation of the start position of MacGyver
+    # Creation of the start position of MacGyver an Murdoc
     position_macgyver = game.Position(14, 0)
-    #Creation of the position of Murdoc
     position_murdock = game.Position(0, 14)
-    # Creation of object mac from class Macgyver
+    # Creation of object macgyver from class Macgyver
     macgyver = game.Macgyver(position_macgyver)
     # Creation of object murdoc from class Murdock
     murdoc = game.Murdoc(position_murdock)
-    # Creation of objects from class Items
-    items = [game.Items(board), game.Items(board), game.Items(board)]
-    instances = [macgyver, murdoc] + items
+    # Creation of objects from class Item
+    items = [game.Needle(board), game.Tube(board), game.Poison(board)]
+    game_elements = [macgyver, murdoc] + items
     play = 1
     end = 1
     while play:
@@ -69,17 +68,18 @@ def main():
         # Display the labyrinth in the window
         window.fill((0, 0, 0)) # reset the display to the inventory
         board.display(window, macgyver)
-        for instance in instances:
-            window.blit(instance.picture, (instance.position.pixels_x, instance.position.pixels_y))
+        for element in game_elements:
+            window.blit(element.picture, (element.position.pixels_x, element.position.pixels_y))
         pygame.display.flip()
-        if board.STRUCTURE[macgyver.position.line][macgyver.position.column] == board.STRUCTURE[murdoc.position.line][murdoc.position.column]:
+        if (macgyver.position.line, macgyver.position.column) == (murdoc.position.line, murdoc.position.column):
             play = 0
+
     start_ticks = pygame.time.get_ticks() # Starter tick
     # Final loop to display the end window to know if you win or not
     while end:
         # Calculate how many seconds
         seconds = (pygame.time.get_ticks()-start_ticks)/1000
-        game.Rules.win(macgyver, board)
+        game.Rule.win(macgyver, board)
         if seconds > 4: # If more than 4 seconds close the game
             end = 0
 
