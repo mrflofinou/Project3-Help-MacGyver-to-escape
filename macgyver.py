@@ -67,7 +67,7 @@ def main():
                     macgyver.catch_if_item(*items)
         # Display the labyrinth in the window
         window.fill((0, 0, 0)) # reset the display to the inventory
-        board.display(window, macgyver)
+        board.display(window)
         for element in game_elements:
             window.blit(element.picture, (element.position.pixels_x, element.position.pixels_y))
         pygame.display.flip()

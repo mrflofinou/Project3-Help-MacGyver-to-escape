@@ -53,7 +53,7 @@ class Board:
             self.STRUCTURE = [[letter for letter in line if letter != "\n"] for line in labyrinth]
 
 
-    def display(self, window, character):
+    def display(self, window):
         """
         This method is to display the game board
         """
@@ -163,6 +163,7 @@ class Macgyver(Character):
                     item.position = Position(15, 3)
                 else:
                     item.position = Position(15, 4)
+
 
 class Murdoc(Character):
     """
