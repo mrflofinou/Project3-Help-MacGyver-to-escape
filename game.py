@@ -84,7 +84,7 @@ class Character:
         .a position
     """
     def __init__(self, position):
-        self.picture = 'picture of character'
+        self.picture = pygame.image.load(constants.murdoc).convert_alpha()
         self.position = position
 
 
@@ -172,12 +172,6 @@ class Murdoc(Character):
         .an avatar
         .his position
     """
-    def __init__(self, position):
-        """
-        This method creates Murdoc with his avatar and his position
-        """
-        self.picture = pygame.image.load(constants.murdoc).convert_alpha()
-        self.position = position
 
 
 class Item:
