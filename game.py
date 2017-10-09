@@ -1,8 +1,8 @@
 """
 This file contains the classes of the programm
 There are 10 classes:
-    - Board
     - Position
+    - Board
     - Character
         - MacGyver
         - Murdoc
@@ -184,16 +184,8 @@ class Item:
     """
     This class is used for:
     - create an item with:
-        .a picture
         .a random position on the game board
     """
-    def __init__(self, board):
-        """
-        This method creates an item with a picture and a random position
-        """
-        self.picture = pygame.image.load(constants.item).convert_alpha()
-        self.position = self._random_position(board)
-
     def _random_position(self, board):
         """
         This method calculates a random position for an item
@@ -211,7 +203,9 @@ class Item:
 
 class Needle(Item):
     """
-    Create a needle
+    Create a needle with:
+        - a picture
+        - a random position
     """
     def __init__(self, board):
         self.picture = pygame.image.load(constants.needle).convert_alpha()
