@@ -95,7 +95,7 @@ class Macgyver(Character):
         .an avatar
         .his start position
         .the number of items
-    - __stairs : move with stairs
+    - move with stairs
     - move MacGyver
     - catch if items
     """
@@ -107,7 +107,7 @@ class Macgyver(Character):
         self.position = position
         self.number_items = 0
 
-    def _take_stairs(self, board):
+    def _take_stairs(self):
         """
         This private method manages the movement with stairs
         """
@@ -126,28 +126,28 @@ class Macgyver(Character):
                     self.position.line -= 1
                     self.position = Position(self.position.line, self.position.column)
                     # Movement with stairs
-                    self._take_stairs(board)
+                    self._take_stairs()
         if direction == "down":
             if self.position.line < len(board.STRUCTURE) - 1:
                 if board.STRUCTURE[self.position.line + 1][self.position.column] != constants.wall_symbol:
                     self.position.line += 1
                     self.position = Position(self.position.line, self.position.column)
                     # Movement with stairs
-                    self._take_stairs(board)
+                    self._take_stairs()
         if direction == "left":
             if self.position.column > 0:
                 if board.STRUCTURE[self.position.line][self.position.column - 1] != constants.wall_symbol:
                     self.position.column -= 1
                     self.position = Position(self.position.line, self.position.column)
                     # Movement with stairs
-                    self._take_stairs(board)
+                    self._take_stairs()
         if direction == "right":
             if self.position.column < len(board.STRUCTURE) - 1:
                 if board.STRUCTURE[self.position.line][self.position.column + 1] != constants.wall_symbol:
                     self.position.column += 1
                     self.position = Position(self.position.line, self.position.column)
                     # Movement with stairs
-                    self._take_stairs(board)
+                    self._take_stairs()
 
     def catch_if_item(self, *items):
         """
