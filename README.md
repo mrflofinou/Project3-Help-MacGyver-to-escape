@@ -11,12 +11,10 @@ Be carefull ! If you don't have all of items, you will can't fight him.
 
 2) Extract ZIP (if you had downloaded the ZIP)
 
-3) In the cloned/extract repository, create a virtual environment with python 3
+3) In the cloned/extracted repository, create a virtual environment with python 3
 
-4) Install the requirements.txt file:
-	pip install -r requirements.txt
+4) Install the requirements.txt file: pip3 install -r requirements.txt
 
-5) Run the game:
-	python3 macgyver.py
+5) Run the game: python3 macgyver.py
 
 6) Enjoy !
