@@ -1,20 +1,37 @@
 # Help MacGyver to escape
-Project 3 of Python web developer course of OpenClassrooms
 
-# Rules
+## Rules
 Help MacGyver to escape from labyrinth.
 Catch the 3 items (a needle, a tube of plastic, some poison) and go to see Murdoc, fight him and go out.
 Be carefull ! If you don't have all of items, you will can't fight him.
 
-# To install the game
-1) Clone the repository or download the ZIP
+## What do you need ?
+To use this app you need:  
+  * [Python3.5 or more](https://www.python.org/downloads/)
+  * A python virtual environment like, for exemple, [virtualenv](https://virtualenv.pypa.io/en/stable/installation/)
 
-2) Extract ZIP (if you had downloaded the ZIP)
+## Install
+ * Install python 3.5 or more  
+  `sudo apt-get install python3`  
 
-3) In the cloned/extracted repository, create a virtual environment with python 3
+ * Install the virtual environment  
+  `[sudo] pip install virtualenv`  
 
-4) Install the requirements.txt file: pip3 install -r requirements.txt
+ * Create a virtual environment  
+  `virtualenv -p python3 env`  
 
-5) Run the game: python3 macgyver.py
+ * Activate your virtual environment (in the current folder)  
+  `source env/bin/activate`  
 
-6) Enjoy !
+ * Clone the repository or download the ZIP
+
+ * Extract ZIP (if you had downloaded the ZIP)
+
+ * Download dependencies  
+  `pip install -r requirements.txt`  
+
+ * To launch the app  
+  `python macgyver.py` 
+  
+## Author
+Florian LESCUYER - [mrflofinou](https://github.com/mrflofinou)
